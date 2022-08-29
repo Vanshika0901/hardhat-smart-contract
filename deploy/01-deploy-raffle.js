@@ -1,8 +1,5 @@
 const { network, ethers } = require("hardhat");
-const {
-  developmentChains,
-  networkConfig,
-} = require("../helper-hardhat-config");
+const { deploymentChains, networkConfig } = require("../helper-hardhat-config");
 const { verify } = require("../utils/verify");
 
 const VRF_SUB_FUND_AMOUNT = ethers.utils.parseEther("5");
@@ -14,9 +11,9 @@ module.exports = async function (hre) {
   const chainId = network.config.chainId;
   let vrfCoordinatorV2Address, subscriptionId;
 
-  if (developmentChains.includes(network.name)) {
+  if (deploymentChains.includes(network.name)) {
     const vrfCoordinatorV2Mock = await ethers.getContract(
-      "VRFCoordinatorV2Mocks"
+      "VRFCoordinatorV2Mock"
     );
     vrfCoordinatorV2Address = vrfCoordinatorV2Mock.address;
     const transactionResponse = await vrfCoordinatorV2Mock.createSubscription();
@@ -54,7 +51,7 @@ module.exports = async function (hre) {
   });
 
   if (
-    !developmentChains.includes(network.name) &&
+    !deploymentChains.includes(network.name) &&
     process.env.ETHERSACAN_API_KEY
   ) {
     log("Verifying.......");
